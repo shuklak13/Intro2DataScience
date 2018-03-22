@@ -23,7 +23,7 @@ data <- read.csv("silicon-valley-diversity-data.csv")
 View(data)
 str(data)
 # This dataset tells us the number of employees 
-  % at every company in every role
+  # at every company in every role
   # for every combination of race and gender
 
 # clean the data
