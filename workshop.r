@@ -5,8 +5,8 @@
 #   ggplot2: https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
 
 # install required packages
-install.packages("dplyr")
-install.packages("ggplot2")
+install.packages("dplyr")   # gives data manipulation functions like transform, filter, and group-by
+install.packages("ggplot2") # makes data plotting easy
 
 # load required packages
 library(dplyr)
@@ -21,10 +21,10 @@ data <- read.csv("silicon-valley-diversity-data.csv")
 
 # view the data
 View(data)
+class(data)
 str(data)
-# This dataset tells us the number of employees 
-  # at every company in every role
-  # for every combination of race and gender
+# This dataset tells us the number of employees at every company
+  # for every combination of race, gender, and position
 
 # clean the data
 data <- transform(data, count = as.numeric(count))
@@ -35,10 +35,14 @@ companies <- unique(data["company"])
 job_categories <- unique(data["job_category"])
 races <- unique(data["race"])
 genders <- unique(data["gender"])
+companies
+job_categories
+races
+genders
 
 # Suppose we are not interested in job title;
-  # we only want to know each company's number of employees 
-  # of every race and gender.
+  # we only want to know the number of people that each company employees 
+  # for each combination race and gender.
 # If we explore the dataset, we notice that, 
   # for every company-race-gender demographic,
   # there is a "Totals" row, summing up
@@ -49,8 +53,8 @@ View(data_without_job)
 
 # Inspecting the data, we realize that there are rows without gender,
   # corresponding to the "Overall Totals" for each race.
-# We can get rid of these rows.
-data_without_job <- filter(data_without_job, gender!="")
+# We can get rid of these rows as well.
+data_without_job <- filter(data_without_job, race!="Overall_totals")
 
 
 
@@ -83,9 +87,9 @@ barplot_gender_horizontal
 
 # plot the data as a percentage-based horizontal bar chart
 barplot_gender_horizontal_percentage <- plot_gender + geom_bar(
-  mapping = aes(x=company, y=count, fill=gender),
-  stat="identity",      
-  position="fill") +  # 'position' changes where the bars are placed
+    mapping = aes(x=company, y=count, fill=gender),
+    stat="identity",      
+    position="fill") +  # 'position' changes where the bars are placed
   coord_flip() + ylab("percentage")
 barplot_gender_horizontal_percentage
 
@@ -104,7 +108,8 @@ social_media_companies <- c("LinkedIn", "Facebook", "Twitter")
 social_media_race <- filter(data_by_race, 
                             company %in% social_media_companies)
 
-# plot the data as a horizontal bar chart
+# plot the data as a horizontal bar chart 
+  # position="dodge" makes bars horizontal to each other (rather than vertical)
 social_media_race_barchart <- ggplot(data = social_media_race) +
                                 geom_bar(mapping = aes(x=company, y=count, fill=race),
                                          stat="identity",      
